@@ -3,6 +3,9 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { formatCurrency, formatDate, formatDateTime, formatRelativeTime } from '@/lib/i18n-utils';
 
+// Computed once at module load — avoids calling impure Date.now() inside render
+const TWO_HOURS_AGO = new Date(Date.now() - 2 * 60 * 60 * 1000);
+
 /**
  * Example component showing various translation patterns
  */
@@ -13,7 +16,7 @@ export function TranslationExamples() {
   // Example data
   const amount = 1234.56;
   const date = new Date('2024-01-15');
-  const recentDate = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 hours ago
+  const recentDate = TWO_HOURS_AGO;
 
   return (
     <div className="space-y-6 p-6">
@@ -61,15 +64,15 @@ export function TranslationExamples() {
 /**
  * Example: Payment card component with translations
  */
-export function PaymentCard({ 
-  amount, 
-  currency, 
-  status, 
-  date 
-}: { 
-  amount: number; 
-  currency: string; 
-  status: string; 
+export function PaymentCard({
+  amount,
+  currency,
+  status,
+  date
+}: {
+  amount: number;
+  currency: string;
+  status: string;
   date: Date;
 }) {
   const t = useTranslations('payment');
@@ -86,12 +89,11 @@ export function PaymentCard({
       </div>
       <div className="flex justify-between items-center">
         <span className="text-sm text-gray-600">{t('status')}</span>
-        <span className={`px-2 py-1 rounded text-sm ${
-          status === 'completed' ? 'bg-green-100 text-green-800' :
+        <span className={`px-2 py-1 rounded text-sm ${status === 'completed' ? 'bg-green-100 text-green-800' :
           status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-          'bg-red-100 text-red-800'
-        }`}>
-          {tStatus(status as any)}
+            'bg-red-100 text-red-800'
+          }`}>
+          {tStatus(status as Parameters<typeof tStatus>[0])}
         </span>
       </div>
       <div className="flex justify-between items-center">
@@ -122,7 +124,7 @@ export function DashboardStats() {
         <div key={index} className="bg-white rounded-lg shadow p-6">
           <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
           <p className="text-2xl font-bold">
-            {stat.currency 
+            {stat.currency
               ? formatCurrency(stat.value, stat.currency, locale)
               : stat.value.toLocaleString(locale)
             }

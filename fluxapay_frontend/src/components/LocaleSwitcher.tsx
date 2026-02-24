@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { routing } from '@/i18n/routing';
 import { useState, useTransition } from 'react';
@@ -62,9 +62,8 @@ export default function LocaleSwitcher() {
               <button
                 key={loc}
                 onClick={() => onSelectChange(loc)}
-                className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                  locale === loc ? 'bg-gray-100 font-medium' : ''
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${locale === loc ? 'bg-gray-100 font-medium' : ''
+                  }`}
               >
                 <span className="text-lg">{localeFlags[loc]}</span>
                 <span>{localeNames[loc]}</span>

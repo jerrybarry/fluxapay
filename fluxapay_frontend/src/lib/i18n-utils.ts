@@ -1,4 +1,4 @@
-import { useLocale } from 'next-intl';
+// i18n utility functions for formatting
 
 /**
  * Format currency based on locale
@@ -36,7 +36,7 @@ export function formatDate(
   options?: Intl.DateTimeFormatOptions
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
@@ -56,7 +56,7 @@ export function formatDateTime(
   options?: Intl.DateTimeFormatOptions
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',

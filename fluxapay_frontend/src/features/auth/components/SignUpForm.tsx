@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import * as yup from "yup";
@@ -234,12 +235,12 @@ const SignUpForm = () => {
               {/* Have account */}
               <div className="pt-2 text-center text-xs md:text-[18px] text-muted-foreground font-semibold">
                 Already have an account?{" "}
-                <a
+                <Link
                   href="/login"
                   className="font-semibold text-indigo-500 hover:text-indigo-600 underline underline-offset-4 hover:underline"
                 >
                   Sign in
-                </a>
+                </Link>
               </div>
             </form>
           </div>

@@ -27,7 +27,6 @@ export function useDashboardStats() {
   const stats = useMemo((): DashboardStats | null => {
     if (summaryError || listError) return null;
     const totalSettled = Number(summary?.total_settled_this_month ?? 0);
-    const totalFees = Number(summary?.total_fees_paid ?? 0);
     const completed = settlements.filter((s) => s.status === "completed");
     const pending = settlements.filter((s) => s.status === "pending");
     const failed = settlements.filter((s) => s.status === "failed");
