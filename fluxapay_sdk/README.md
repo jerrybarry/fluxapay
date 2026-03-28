@@ -31,6 +31,22 @@ const payment = await client.payments.create({
 console.log('Payment URL:', payment.checkout_url);
 ```
 
+## Embedded checkout (iframe spike)
+
+To show checkout **inside** your storefront, use the embed path and an allowlisted parent origin. The SDK can build the iframe `src`:
+
+```typescript
+import { buildCheckoutEmbedUrl } from '@fluxapay/sdk';
+
+const iframeSrc = buildCheckoutEmbedUrl(
+  'https://pay.fluxapay.com',
+  payment.id,
+  'https://your-store.example',
+);
+```
+
+Configure the FluxaPay **frontend** deployment with matching `CHECKOUT_EMBED_FRAME_ANCESTORS` and `NEXT_PUBLIC_CHECKOUT_EMBED_PARENT_ORIGINS`. Full threat model, `postMessage` shape, and constraints vs hosted checkout are documented in the monorepo at `fluxapay_frontend/docs/EMBEDDED_CHECKOUT.md`.
+
 ## API Reference
 
 ### Configuration

@@ -58,6 +58,33 @@ export interface WebhookEvent {
   data: Record<string, unknown>;
 }
 
+/** Message emitted by embedded checkout iframe (listen with window.addEventListener('message')). */
+export interface CheckoutEmbedStatusMessage {
+  source: 'fluxapay';
+  type: 'checkout:status';
+  paymentId: string;
+  status: string;
+}
+
+/**
+ * Build the iframe URL for embedded checkout.
+ * The FluxaPay deployment must allow `parentOrigin` in CSP and NEXT_PUBLIC_CHECKOUT_EMBED_PARENT_ORIGINS.
+ *
+ * @param checkoutBase - Hosted checkout origin (e.g. https://pay.fluxapay.com), no trailing slash
+ * @param paymentId - Payment id from `payments.create`
+ * @param parentOrigin - Storefront origin (e.g. https://shop.example)
+ */
+export function buildCheckoutEmbedUrl(
+  checkoutBase: string,
+  paymentId: string,
+  parentOrigin: string,
+): string {
+  const base = checkoutBase.replace(/\/$/, '');
+  const u = new URL(`${base}/pay/${encodeURIComponent(paymentId)}/embed`);
+  u.searchParams.set('parent', parentOrigin);
+  return u.toString();
+}
+
 // ── Errors ───────────────────────────────────────────────────────────────────
 
 export class FluxaPayError extends Error {
