@@ -67,7 +67,7 @@ test.describe('Smoke Tests - Critical Path', () => {
 
   test('@smoke - Create payment page loads', async ({ page }) => {
     // Mock authentication for this test
-    await page.route('**/api/merchants/me', (route) =>
+    await page.route('**/api/v1/merchants/me', (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',

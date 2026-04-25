@@ -139,11 +139,44 @@ function refundAdminKeyHeader(): Record<string, string> {
   return header;
 }
 
+export const API_ROUTES = {
+  AUTH: {
+    SIGNUP: "/api/v1/merchants/signup",
+    LOGIN: "/api/v1/merchants/login",
+    VERIFY_OTP: "/api/v1/merchants/verify-otp",
+    RESEND_OTP: "/api/v1/merchants/resend-otp",
+    FORGOT_PASSWORD: "/api/v1/merchants/forgot-password",
+    VALIDATE_RESET_TOKEN: "/api/v1/merchants/validate-reset-token",
+    RESET_PASSWORD: "/api/v1/merchants/reset-password",
+    LOGOUT_ALL: "/api/v1/merchants/logout-all",
+  },
+  MERCHANT: {
+    ME: "/api/v1/merchants/me",
+    WEBHOOK: "/api/v1/merchants/me/webhook",
+  },
+  KEYS: {
+    REGENERATE: "/api/v1/keys/regenerate",
+    ROTATE_API_KEY: "/api/v1/merchants/keys/rotate-api-key",
+    ROTATE_WEBHOOK_SECRET: "/api/v1/merchants/keys/rotate-webhook-secret",
+  },
+  ADMIN_MERCHANTS: {
+    LIST: "/api/v1/merchants/admin/list",
+    GET: (id: string) => `/api/v1/merchants/admin/${id}`,
+    UPDATE_STATUS: (id: string) => `/api/v1/merchants/admin/${id}/status`,
+    BULK_STATUS: "/api/v1/merchants/admin/bulk-status",
+  },
+  ADMIN_KYC: {
+    SUBMISSIONS: "/api/v1/merchants/kyc/admin/submissions",
+    GET: (id: string) => `/api/v1/merchants/kyc/admin/${id}`,
+    UPDATE_STATUS: (id: string) => `/api/v1/merchants/kyc/admin/${id}/status`,
+  }
+} as const;
+
 export const api = {
-  // Authentication — routes match backend /api/merchants/*
+  // Authentication
   auth: {
     signup: (data: AuthSignupRequest) =>
-      fetch(`${API_BASE_URL}/api/merchants/signup`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.SIGNUP}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -152,7 +185,7 @@ export const api = {
         return res.json();
       }),
     login: (data: AuthLoginRequest) =>
-      fetch(`${API_BASE_URL}/api/merchants/login`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.LOGIN}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -169,7 +202,7 @@ export const api = {
         return res.json();
       }),
     verifyOtp: (data: { merchantId: string; channel: "email" | "phone"; otp: string }) =>
-      fetch(`${API_BASE_URL}/api/merchants/verify-otp`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.VERIFY_OTP}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -178,7 +211,7 @@ export const api = {
         return res.json();
       }),
     resendOtp: (data: { merchantId: string; channel: "email" | "phone" }) =>
-      fetch(`${API_BASE_URL}/api/merchants/resend-otp`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.RESEND_OTP}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -187,7 +220,7 @@ export const api = {
         return res.json();
       }),
     forgotPassword: (data: { email: string }) =>
-      fetch(`${API_BASE_URL}/api/merchants/forgot-password`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.FORGOT_PASSWORD}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -199,7 +232,7 @@ export const api = {
         return res.json();
       }),
     validateResetToken: (token: string) =>
-      fetch(`${API_BASE_URL}/api/merchants/validate-reset-token?token=${encodeURIComponent(token)}`).then(async (res) => {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.VALIDATE_RESET_TOKEN}?token=${encodeURIComponent(token)}`).then(async (res) => {
         if (!res.ok) {
            const err = await res.json().catch(() => ({ message: "Invalid or expired token" }));
            throw new ApiError(res.status, err.message || "Invalid or expired token");
@@ -207,7 +240,7 @@ export const api = {
         return res.json();
       }),
     resetPassword: (data: { token: string; new_password: string }) =>
-      fetch(`${API_BASE_URL}/api/merchants/reset-password`, {
+      fetch(`${API_BASE_URL}${API_ROUTES.AUTH.RESET_PASSWORD}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -219,14 +252,14 @@ export const api = {
         return res.json();
       }),
     logoutAllSessions: () =>
-      fetchWithAuth("/api/merchants/logout-all", {
+      fetchWithAuth(API_ROUTES.AUTH.LOGOUT_ALL, {
         method: "POST",
       }),
   },
 
   // Merchant endpoints
   merchant: {
-    getMe: () => fetchWithAuth("/api/merchants/me"),
+    getMe: () => fetchWithAuth(API_ROUTES.MERCHANT.ME),
 
     updateProfile: (data: {
       business_name?: string;
@@ -236,13 +269,13 @@ export const api = {
       checkout_logo_url?: string | null;
       checkout_accent_color?: string | null;
     }) =>
-      fetchWithAuth("/api/merchants/me", {
+      fetchWithAuth(API_ROUTES.MERCHANT.ME, {
         method: "PATCH",
         body: JSON.stringify(data),
       }),
 
     updateWebhook: (webhook_url: string) =>
-      fetchWithAuth("/api/merchants/me/webhook", {
+      fetchWithAuth(API_ROUTES.MERCHANT.WEBHOOK, {
         method: "PATCH",
         body: JSON.stringify({ webhook_url }),
       }),
@@ -251,15 +284,15 @@ export const api = {
   // API Keys endpoints
   keys: {
     regenerate: () =>
-      fetchWithAuth("/api/v1/keys/regenerate", {
+      fetchWithAuth(API_ROUTES.KEYS.REGENERATE, {
         method: "POST",
       }),
     rotateApiKey: () =>
-      fetchWithAuth("/api/merchants/keys/rotate-api-key", {
+      fetchWithAuth(API_ROUTES.KEYS.ROTATE_API_KEY, {
         method: "POST",
       }),
     rotateWebhookSecret: () =>
-      fetchWithAuth("/api/merchants/keys/rotate-webhook-secret", {
+      fetchWithAuth(API_ROUTES.KEYS.ROTATE_WEBHOOK_SECRET, {
         method: "POST",
       }),
   },
@@ -287,12 +320,12 @@ export const api = {
       if (params?.page) qs.set("page", String(params.page));
       if (params?.limit) qs.set("limit", String(params.limit));
       if (params?.status) qs.set("status", params.status);
-      return adminFetch(`/api/merchants/admin/list?${qs.toString()}`);
+      return adminFetch(`${API_ROUTES.ADMIN_MERCHANTS.LIST}?${qs.toString()}`);
     },
     get: (merchantId: string) =>
-      adminFetch(`/api/merchants/admin/${merchantId}`),
+      adminFetch(API_ROUTES.ADMIN_MERCHANTS.GET(merchantId)),
     updateStatus: (merchantId: string, status: string) =>
-      adminFetch(`/api/merchants/admin/${merchantId}/status`, {
+      adminFetch(API_ROUTES.ADMIN_MERCHANTS.UPDATE_STATUS(merchantId), {
         method: "PATCH",
         body: JSON.stringify({ status }),
       }),
@@ -305,15 +338,15 @@ export const api = {
       if (params?.status) qs.set("status", params.status);
       if (params?.page) qs.set("page", String(params.page));
       if (params?.limit) qs.set("limit", String(params.limit));
-      return fetchWithAuth(`/api/merchants/kyc/admin/submissions?${qs.toString()}`);
+      return fetchWithAuth(`${API_ROUTES.ADMIN_KYC.SUBMISSIONS}?${qs.toString()}`);
     },
     getByMerchant: (merchantId: string) =>
-      fetchWithAuth(`/api/merchants/kyc/admin/${merchantId}`),
+      fetchWithAuth(API_ROUTES.ADMIN_KYC.GET(merchantId)),
     updateStatus: (
       merchantId: string,
       body: { kyc_status: string; rejection_reason?: string },
     ) =>
-      fetchWithAuth(`/api/merchants/kyc/admin/${merchantId}/status`, {
+      fetchWithAuth(API_ROUTES.ADMIN_KYC.UPDATE_STATUS(merchantId), {
         method: "PATCH",
         body: JSON.stringify(body),
       }),
@@ -418,15 +451,15 @@ export const api = {
         if (params?.status) sp.set("status", params.status);
         if (params?.page != null) sp.set("page", String(params.page));
         if (params?.limit != null) sp.set("limit", String(params.limit));
-        return fetchWithAuth(`/api/merchants/kyc/admin/submissions?${sp.toString()}`);
+        return fetchWithAuth(`${API_ROUTES.ADMIN_KYC.SUBMISSIONS}?${sp.toString()}`);
       },
       getByMerchantId: (merchantId: string) =>
-        fetchWithAuth(`/api/merchants/kyc/admin/${merchantId}`),
+        fetchWithAuth(API_ROUTES.ADMIN_KYC.GET(merchantId)),
       updateStatus: (
         merchantId: string,
         body: { status: "approved" | "rejected" | "additional_info_required"; rejection_reason?: string },
       ) =>
-        fetchWithAuth(`/api/merchants/kyc/admin/${merchantId}/status`, {
+        fetchWithAuth(API_ROUTES.ADMIN_KYC.UPDATE_STATUS(merchantId), {
           method: "PATCH",
           body: JSON.stringify(body),
         }),
@@ -650,7 +683,7 @@ export const api = {
           body: JSON.stringify({ status }),
         }),
       bulkUpdateStatus: (merchantIds: string[], status: "active" | "suspended", reason: string) =>
-        fetchWithAuth("/api/merchants/admin/bulk-status", {
+        fetchWithAuth(API_ROUTES.ADMIN_MERCHANTS.BULK_STATUS, {
           method: "POST",
           body: JSON.stringify({ merchantIds, status, reason }),
         }),

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 /**
  * E2E – Signup flow
- * Intercepts POST /api/merchants/signup (matches backend route).
+ * Intercepts POST /api/v1/merchants/signup (matches backend route).
  */
 test.describe('Signup flow', () => {
   test('shows validation errors for empty form', async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe('Signup flow', () => {
   });
 
   test('completes signup with valid data (mocked API)', async ({ page }) => {
-    await page.route('**/api/merchants/signup', (route) =>
+    await page.route('**/api/v1/merchants/signup', (route) =>
       route.fulfill({
         status: 201,
         contentType: 'application/json',

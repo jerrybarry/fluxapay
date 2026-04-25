@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 /**
  * E2E – Login flow
- * Intercepts POST /api/merchants/login (matches backend route).
+ * Intercepts POST /api/v1/merchants/login (matches backend route).
  */
 test.describe("Login flow", () => {
   test("@smoke - shows validation error for empty fields", async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe("Login flow", () => {
   });
 
   test("shows error for invalid credentials (mocked API)", async ({ page }) => {
-    await page.route("**/api/merchants/login", (route) =>
+    await page.route("**/api/v1/merchants/login", (route) =>
       route.fulfill({
         status: 400,
         contentType: "application/json",
@@ -33,7 +33,7 @@ test.describe("Login flow", () => {
   test("@smoke - redirects to dashboard on successful login (mocked API)", async ({
     page,
   }) => {
-    await page.route("**/api/merchants/login", (route) =>
+    await page.route("**/api/v1/merchants/login", (route) =>
       route.fulfill({
         status: 200,
         contentType: "application/json",

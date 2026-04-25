@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useState, useRef, useEffect } from "react";
+import { X } from "lucide-react";
 
 export interface CheckoutWidgetConfig {
   paymentId: string;

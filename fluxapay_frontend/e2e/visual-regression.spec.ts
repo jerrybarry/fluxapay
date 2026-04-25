@@ -16,7 +16,7 @@ test.describe('Visual Regression Tests', () => {
 
   test('Dashboard UI visual regression', async ({ page }) => {
     // Mock authentication and dashboard data
-    await page.route('**/api/merchants/me', (route) =>
+    await page.route('**/api/v1/merchants/me', (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',

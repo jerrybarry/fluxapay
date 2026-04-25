@@ -14,6 +14,7 @@ const statusVariant: Record<InvoiceStatus, "success" | "warning" | "error" | "se
   pending: "warning",
   overdue: "error",
   unpaid: "secondary",
+  cancelled: "secondary",
 };
 
 const statusLabel: Record<InvoiceStatus, string> = {
@@ -21,6 +22,7 @@ const statusLabel: Record<InvoiceStatus, string> = {
   pending: "Pending",
   overdue: "Overdue",
   unpaid: "Unpaid",
+  cancelled: "Cancelled",
 };
 
 export const InvoiceDetails = ({ invoice }: InvoiceDetailsProps) => {

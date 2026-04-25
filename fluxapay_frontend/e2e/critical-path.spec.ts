@@ -25,7 +25,7 @@ test.describe("Critical path (signup → OTP → login → payment → checkout 
     let statusPollCount = 0;
 
     await setupMocks(page, async (p) => {
-      await p.route("**/api/merchants/signup", async (route) => {
+      await p.route("**/api/v1/merchants/signup", async (route) => {
         if (route.request().method() !== "POST") return route.continue();
         await route.fulfill({
           status: 201,
@@ -37,7 +37,7 @@ test.describe("Critical path (signup → OTP → login → payment → checkout 
         });
       });
 
-      await p.route("**/api/merchants/verify-otp", async (route) => {
+      await p.route("**/api/v1/merchants/verify-otp", async (route) => {
         if (route.request().method() !== "POST") return route.continue();
         await route.fulfill({
           status: 200,
@@ -46,7 +46,7 @@ test.describe("Critical path (signup → OTP → login → payment → checkout 
         });
       });
 
-      await p.route("**/api/merchants/login", async (route) => {
+      await p.route("**/api/v1/merchants/login", async (route) => {
         if (route.request().method() !== "POST") return route.continue();
         await route.fulfill({
           status: 200,
@@ -59,7 +59,7 @@ test.describe("Critical path (signup → OTP → login → payment → checkout 
         });
       });
 
-      await p.route("**/api/merchants/me", async (route) => {
+      await p.route("**/api/v1/merchants/me", async (route) => {
         if (route.request().method() !== "GET") return route.continue();
         await route.fulfill({
           status: 200,
